@@ -542,30 +542,11 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if the given {@code exceptionType} is null
      */
     @SuppressWarnings("deprecation")
-    public <X extends Throwable> Try<T> orElseRethrowIfInstanceOf(Class<X> exceptionType) throws X {
+    public <X extends Throwable> Try<T> rethrow(Class<X> exceptionType) throws X {
         requireNonNull(exceptionType, "exceptionType is null");
         if (isFailure()) {
             if (exceptionType.isInstance(getCause())) {
                 throw exceptionType.cast(getCause());
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Rethrows the exception if this is a failure and the cause is an unchecked exception, returns this
-     * {@code Try} otherwise.
-     *
-     * @return A value of type {@code T}
-     * @throws RuntimeException if this is a {@code Failure} and the cause in a {@code RuntimeException}
-     * @throws Error            if this is a {@code Failure} and the cause is an {@code Error}
-     */
-    public Try<T> orElseRethrowIfUnchecked() throws RuntimeException, Error {
-        if (isFailure()) {
-            if (getCause() instanceof RuntimeException) {
-                throw (RuntimeException)getCause();
-            } else if (getCause() instanceof Error) {
-                throw (Error)getCause();
             }
         }
         return this;
@@ -837,7 +818,13 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
 
         @Override
         public T get() throws NonFatalException {
-            throw new NonFatalException(cause);
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException)cause;
+            } else if (cause instanceof Error) {
+                throw (Error)cause;
+            } else {
+                throw new NonFatalException(cause);
+            }
         }
 
         @Override
