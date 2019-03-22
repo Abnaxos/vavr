@@ -251,7 +251,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if {@code predicate} is null
      */
     public Try<T> filter(CheckedPredicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
+        requireNonNull(predicate, "predicate is null");
         if (isSuccess()) {
             try {
                 final T value = get();
@@ -275,7 +275,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      */
     @SuppressWarnings("unchecked")
     public <U> Try<U> flatMap(CheckedFunction<? super T, ? extends Try<? extends U>> mapper) {
-        Objects.requireNonNull(mapper, "mapper is null");
+        requireNonNull(mapper, "mapper is null");
         if (isSuccess()) {
             try {
                 return (Try<U>) mapper.apply(get());
@@ -297,8 +297,8 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if one of the given {@code ifFailure} or {@code ifSuccess} is null
      */
     public <U> U fold(Function<? super Throwable, ? extends U> ifFailure, Function<? super T, ? extends U> ifSuccess) {
-        Objects.requireNonNull(ifFailure, "ifFailure is null");
-        Objects.requireNonNull(ifSuccess, "ifSuccess is null");
+        requireNonNull(ifFailure, "ifFailure is null");
+        requireNonNull(ifSuccess, "ifSuccess is null");
         return isSuccess() ? ifSuccess.apply(get()) : ifFailure.apply(getCause());
     }
 
@@ -346,7 +346,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if the given {@code other} is null
      */
     public T getOrElseGet(Supplier<? extends T> supplier) {
-        Objects.requireNonNull(supplier, "supplier is null");
+        requireNonNull(supplier, "supplier is null");
         return isSuccess() ? get() : supplier.get();
     }
 
@@ -360,7 +360,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if the given {@code exceptionProvider} is null
      */
     public <X extends Throwable> T getOrElseThrow(Function<? super Throwable, ? extends X> exceptionProvider) throws X {
-        Objects.requireNonNull(exceptionProvider, "exceptionProvider is null");
+        requireNonNull(exceptionProvider, "exceptionProvider is null");
         if (isSuccess()) {
             return get();
         } else {
@@ -409,7 +409,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      */
     @SuppressWarnings("unchecked")
     public <U> Try<U> map(CheckedFunction<? super T, ? extends U> mapper) {
-        Objects.requireNonNull(mapper, "mapper is null");
+        requireNonNull(mapper, "mapper is null");
         if (isSuccess()) {
             try {
                 return success(mapper.apply(get()));
@@ -429,7 +429,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if the given {@code mapper} is null
      */
     public Try<T> mapFailure(CheckedFunction<? super Throwable, ? extends Throwable> mapper) {
-        Objects.requireNonNull(mapper, "mapper is null");
+        requireNonNull(mapper, "mapper is null");
         if (isFailure()) {
             try {
                 return failure(mapper.apply(getCause()));
@@ -457,7 +457,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if {@code action} is null
      */
     public Try<T> onFailure(Consumer<? super Throwable> action) {
-        Objects.requireNonNull(action, "action is null");
+        requireNonNull(action, "action is null");
         if (isFailure()) {
             action.accept(getCause());
         }
@@ -480,7 +480,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if {@code action} is null
      */
     public Try<T> onSuccess(Consumer<? super T> action) {
-        Objects.requireNonNull(action, "action is null");
+        requireNonNull(action, "action is null");
         if (isSuccess()) {
             action.accept(get());
         }
@@ -495,7 +495,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      */
     @SuppressWarnings("unchecked")
     public Try<T> orElse(CheckedSupplier<? extends Try<? extends T>> supplier) {
-        Objects.requireNonNull(supplier, "supplier is null");
+        requireNonNull(supplier, "supplier is null");
         if (isSuccess()) {
             return this;
         } else {
@@ -534,8 +534,8 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      */
     @SuppressWarnings("unchecked")
     public <X extends Throwable> Try<T> recover(Class<X> exceptionType, CheckedFunction<? super X, ? extends T> recoveryFunction) {
-        Objects.requireNonNull(exceptionType, "exceptionType is null");
-        Objects.requireNonNull(recoveryFunction, "recoveryFunction is null");
+        requireNonNull(exceptionType, "exceptionType is null");
+        requireNonNull(recoveryFunction, "recoveryFunction is null");
         if (isFailure()) {
             final Throwable cause = getCause();
             if (exceptionType.isAssignableFrom(cause.getClass())) {
@@ -573,8 +573,8 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      */
     @SuppressWarnings("unchecked")
     public <X extends Throwable> Try<T> recoverWith(Class<X> exceptionType, CheckedFunction<? super X, ? extends Try<? extends T>> recoveryFunction) {
-        Objects.requireNonNull(exceptionType, "exceptionType is null");
-        Objects.requireNonNull(recoveryFunction, "recoveryFunction is null");
+        requireNonNull(exceptionType, "exceptionType is null");
+        requireNonNull(recoveryFunction, "recoveryFunction is null");
         if (isFailure()) {
             final Throwable cause = getCause();
             if (exceptionType.isAssignableFrom(cause.getClass())) {
@@ -606,7 +606,7 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      * @throws NullPointerException if the given {@code failureMapper} is null
      */
     public <U> Either<U, T> toEither(Function<? super Throwable, ? extends U> failureMapper) {
-        Objects.requireNonNull(failureMapper, "failureMapper is null");
+        requireNonNull(failureMapper, "failureMapper is null");
         return isSuccess() ? Either.right(get()) : Either.left(failureMapper.apply(getCause()));
     }
 
@@ -639,8 +639,8 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
      */
     @SuppressWarnings("unchecked")
     public <U> Try<U> transform(CheckedFunction<? super Throwable, ? extends Try<? extends U>> ifFailure, CheckedFunction<? super T, ? extends Try<? extends U>> ifSuccess) {
-        Objects.requireNonNull(ifFailure, "ifFailure is null");
-        Objects.requireNonNull(ifSuccess, "ifSuccess is null");
+        requireNonNull(ifFailure, "ifFailure is null");
+        requireNonNull(ifSuccess, "ifSuccess is null");
         try {
             return isSuccess()
                    ? (Try<U>) ifSuccess.apply(get())
@@ -649,6 +649,8 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
             return failure(t);
         }
     }
+
+    protected abstract <U> U requireNonNull(U value, String message);
 
     /**
      * Checks if this {@code Try} is equal to the given object {@code o}.
@@ -718,6 +720,15 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
         }
 
         @Override
+        protected <U> U requireNonNull(U value, String message) {
+            if (value == null) {
+                throw new NullPointerException(message);
+            } else {
+                return value;
+            }
+        }
+
+        @Override
         public boolean equals(Object obj) {
             return (obj == this) || (obj instanceof Success && Objects.equals(value, ((Success<?>) obj).value));
         }
@@ -778,6 +789,17 @@ public abstract class Try<T> implements io.vavr.Iterable<T>, Serializable {
         @Override
         public boolean isSuccess() {
             return false;
+        }
+
+        @Override
+        protected <U> U requireNonNull(U value, String message) {
+            if (value == null) {
+                NullPointerException npe = new NullPointerException(message);
+                npe.addSuppressed(getCause());
+                throw npe;
+            } else {
+                return value;
+            }
         }
 
         @Override
